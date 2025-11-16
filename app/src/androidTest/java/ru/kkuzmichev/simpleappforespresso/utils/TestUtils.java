@@ -4,6 +4,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 
+import androidx.recyclerview.widget.RecyclerView;
+
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
@@ -26,6 +28,22 @@ public final class TestUtils {
                 return parent instanceof ViewGroup &&
                         parentMatcher.matches(parent) &&
                         view.equals(((ViewGroup) parent).getChildAt(position));
+            }
+        };
+    }
+    public static Matcher<View> recyclerViewSizeMatcher(final int expectedSize) {
+        return new TypeSafeMatcher<View>() {
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("RecyclerView should have " + expectedSize + " items");
+            }
+
+            @Override
+            protected boolean matchesSafely(View view) {
+                if (!(view instanceof RecyclerView)) return false;
+                RecyclerView recyclerView = (RecyclerView) view;
+                return recyclerView.getAdapter() != null &&
+                        recyclerView.getAdapter().getItemCount() == expectedSize;
             }
         };
     }
